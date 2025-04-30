@@ -2,7 +2,6 @@ package rsa_cipher.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import org.springframework.stereotype.Controller;
 import rsa_cipher.rsa_cipher.RSACipher;
 import rsa_cipher.utils.FileUtil;
 import rsa_cipher.utils.InputValidator;
@@ -11,7 +10,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Controller
 public class MainController {
     @FXML
     private TextField pInput;

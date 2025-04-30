@@ -1,8 +1,6 @@
 module rsa_cipher {
     requires javafx.controls;
     requires javafx.fxml;
-    requires spring.context;
-    requires spring.beans;
 
 
     opens rsa_cipher to javafx.fxml;
