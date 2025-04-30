@@ -1,16 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
-
 <?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="rsa_cipher.MainController">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-    </padding>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
 
-    <Label fx:id="welcomeText"/>
-    <Button text="Hello!" onAction="#onHelloButtonClick"/>
-</VBox>
+<Pane prefHeight="450.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rsa_cipher.controller.MainController">
+
+    <!-- MenuBar -->
+    <MenuBar layoutX="0" layoutY="0" prefWidth="700.0">
+        <Menu text="Файл">
+            <MenuItem text="Открыть" onAction="#openFile"/>
+            <MenuItem text="Сохранить" onAction="#saveFile"/>
+        </Menu>
+    </MenuBar>
+
+    <!-- Input Fields -->
+    <Label layoutX="82.0" layoutY="44.0" text="p" />
+    <TextField fx:id="pInput" layoutX="100" layoutY="40" prefWidth="200" />
+
+    <Label layoutX="82.0" layoutY="84.0" text="q" />
+    <TextField fx:id="qInput" layoutX="100" layoutY="80" prefWidth="200" />
+
+    <Label layoutX="2.0" layoutY="124.0" text="Закрытый ключ" />
+    <TextField fx:id="closedKeyInput" layoutX="100" layoutY="120" prefWidth="200" />
+
+    <!-- Output Fields -->
+    <Label layoutX="400.0" layoutY="44.0" text="R" />
+    <TextField fx:id="rOutput" editable="false" layoutX="430" layoutY="40" prefWidth="200" />
+
+    <Label layoutX="392.0" layoutY="84.0" text="φ(R)" />
+    <TextField fx:id="eulerOutput" editable="false" layoutX="430" layoutY="80" prefWidth="200" />
+
+    <!-- Buttons -->
+    <Button fx:id="calcultateButton" layoutX="20" layoutY="180" prefHeight="25.0" prefWidth="179.0" text="Сформировать числа" />
+    <Button fx:id="cipherButton" layoutX="261.0" layoutY="180.0" prefHeight="25.0" prefWidth="179.0" text="Зашифровать" />
+    <Button fx:id="encipherButtom" layoutX="501.0" layoutY="180.0" prefHeight="25.0" prefWidth="179.0" text="Расшифровать" />
+
+    <!-- Multi-line Output Areas -->
+    <Label layoutX="20" layoutY="220" text="Исходный текст" />
+    <TextArea fx:id="plainTextOutput" editable="false" layoutX="20.0" layoutY="250.0" prefHeight="80" prefWidth="660" wrapText="true" />
+
+    <Label layoutX="20.0" layoutY="330.0" text="Зашифрованный текст" />
+    <TextArea fx:id="cipherTextOutput" editable="false" layoutX="20.0" layoutY="356.0" prefHeight="80" prefWidth="660" wrapText="true" />
+   <Label layoutX="332.0" layoutY="124.0" text="Открытый ключ" />
+   <TextField fx:id="openKeyOutput" editable="false" layoutX="430.0" layoutY="120.0" prefWidth="200" />
+</Pane>
