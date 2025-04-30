@@ -5,29 +5,33 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
 <Pane prefHeight="450.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rsa_cipher.controller.MainController">
 
     <!-- MenuBar -->
     <MenuBar layoutX="0" layoutY="0" prefWidth="700.0">
         <Menu text="Файл">
-            <MenuItem text="Открыть" onAction="#openFile"/>
-            <MenuItem text="Сохранить" onAction="#saveFile"/>
+            <MenuItem onAction="#openFile" text="Открыть" />
+            <MenuItem onAction="#saveFile" text="Сохранить" />
         </Menu>
     </MenuBar>
 
     <!-- Input Fields -->
-    <Label layoutX="82.0" layoutY="44.0" text="p" />
-    <TextField fx:id="pInput" layoutX="100" layoutY="40" prefWidth="200" />
+    <Label layoutX="85.0" layoutY="44.0" text="p" />
+    <TextField fx:id="pInput" layoutX="106.0" layoutY="40.0" prefWidth="200" />
 
-    <Label layoutX="82.0" layoutY="84.0" text="q" />
-    <TextField fx:id="qInput" layoutX="100" layoutY="80" prefWidth="200" />
+    <Label layoutX="85.0" layoutY="84.0" text="q" />
+    <TextField fx:id="qInput" layoutX="106.0" layoutY="80.0" prefWidth="200" />
 
-    <Label layoutX="2.0" layoutY="124.0" text="Закрытый ключ" />
-    <TextField fx:id="closedKeyInput" layoutX="100" layoutY="120" prefWidth="200" />
+    <Label layoutX="2.0" layoutY="124.0" text="Закрытый ключ (d)" />
+    <TextField fx:id="closedKeyInput" layoutX="106.0" layoutY="120.0" prefWidth="200" />
 
     <!-- Output Fields -->
     <Label layoutX="400.0" layoutY="44.0" text="R" />
@@ -36,17 +40,33 @@
     <Label layoutX="392.0" layoutY="84.0" text="φ(R)" />
     <TextField fx:id="eulerOutput" editable="false" layoutX="430" layoutY="80" prefWidth="200" />
 
-    <!-- Buttons -->
-    <Button fx:id="calcultateButton" layoutX="20" layoutY="180" prefHeight="25.0" prefWidth="179.0" text="Сформировать числа" />
-    <Button fx:id="cipherButton" layoutX="261.0" layoutY="180.0" prefHeight="25.0" prefWidth="179.0" text="Зашифровать" />
-    <Button fx:id="encipherButtom" layoutX="501.0" layoutY="180.0" prefHeight="25.0" prefWidth="179.0" text="Расшифровать" />
+    <!-- Mode Toggle and Action Button -->
+    <HBox layoutX="20" layoutY="180" spacing="10" />
+
+    <Button fx:id="processButton" layoutX="292.0" layoutY="177.0" onAction="#processData" prefHeight="25.0" prefWidth="200.0" text="Выполнить" />
 
     <!-- Multi-line Output Areas -->
-    <Label layoutX="20" layoutY="220" text="Исходный текст" />
-    <TextArea fx:id="plainTextOutput" editable="false" layoutX="20.0" layoutY="250.0" prefHeight="80" prefWidth="660" wrapText="true" />
+    <Label layoutX="20" layoutY="220" text="Исходные данные" />
+    <TextArea fx:id="inputText" layoutX="20.0" layoutY="250.0" prefHeight="80" prefWidth="660" wrapText="true" />
 
-    <Label layoutX="20.0" layoutY="330.0" text="Зашифрованный текст" />
-    <TextArea fx:id="cipherTextOutput" editable="false" layoutX="20.0" layoutY="356.0" prefHeight="80" prefWidth="660" wrapText="true" />
-   <Label layoutX="332.0" layoutY="124.0" text="Открытый ключ" />
-   <TextField fx:id="openKeyOutput" editable="false" layoutX="430.0" layoutY="120.0" prefWidth="200" />
+    <Label layoutX="20.0" layoutY="330.0" text="Результат" />
+    <TextArea fx:id="outputText" editable="false" layoutX="20.0" layoutY="356.0" prefHeight="80" prefWidth="660" wrapText="true" />
+
+    <Label layoutX="318.0" layoutY="124.0" text="Открытый ключ (e)" />
+    <TextField fx:id="openKeyOutput" editable="false" layoutX="430.0" layoutY="120.0" prefWidth="200" />
+    <RadioButton fx:id="columns" layoutX="543.0" layoutY="166.0" onAction="#setMode" selected="true" text="Шифрование" userData="encipher">
+        <toggleGroup>
+            <ToggleGroup fx:id="modeSelector" />
+        </toggleGroup>
+        <font>
+            <Font size="14.0" />
+        </font>
+    </RadioButton>
+
+    <RadioButton fx:id="vigenere" layoutX="543.0" layoutY="202.0" onAction="#setMode" selected="false" text="Дешифрирование" toggleGroup="$modeSelector" userData="decipher">
+        <font>
+            <Font size="14.0" />
+        </font>
+    </RadioButton>
+   <Button fx:id="calcultateButton" layoutX="46.0" layoutY="177.0" onAction="#processData" prefHeight="25.0" prefWidth="200.0" text="Сформировать числа" />
 </Pane>

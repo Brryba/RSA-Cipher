@@ -1,15 +1,13 @@
 package rsa_cipher.controller;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import org.springframework.beans.factory.annotation.Autowired;
+import javafx.scene.control.*;
 import org.springframework.stereotype.Controller;
 import rsa_cipher.rsa_cipher.RSACipher;
+import rsa_cipher.utils.FileUtil;
 import rsa_cipher.utils.InputValidator;
 
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -29,19 +27,19 @@ public class MainController {
     private TextField openKeyOutput;
 
     @FXML
-    private TextArea plainTextOutput;
+    private TextArea inputText;
     @FXML
-    private TextArea cipherTextOutput;
+    private TextArea outputText;
 
     @FXML
     private Button calcultateButton;
+
     @FXML
-    private Button cipherButton;
-    @FXML
-    private Button encipherButtom;
+    private ToggleGroup modeSelector;
 
     private InputValidator inputValidator;
     private RSACipher rsaCipher;
+    private FileUtil fileUtil;
 
     private int p;
     private int q;
@@ -50,17 +48,17 @@ public class MainController {
     private int openKey;
     private int closedKey;
     private boolean isDataCorrect;
+    private boolean isEncoding = true;
 
-    private List<Byte> plainBytes;
-    private List<Byte> cipherBytes;
+    private List<Short> inputTextSymbolsArray;
+    private List<Short> resultTextSymbolsArray;
 
     @FXML
     public void initialize() {
         calcultateButton.setOnAction(_ -> handleCalculateButton());
-        cipherButton.setOnAction(_ -> handleCipherButton());
-        encipherButtom.setOnAction(_ -> handleEncipherButton());
-        inputValidator = new InputValidator();
-        rsaCipher = new RSACipher();
+        this.inputValidator = new InputValidator();
+        this.rsaCipher = new RSACipher();
+        this.fileUtil = new FileUtil();
     }
 
     private void handleCalculateButton() {
@@ -72,6 +70,7 @@ public class MainController {
             if (inputValidator.isPrime(p) && inputValidator.isPrime(q)) {
                 this.p = p;
                 this.q = q;
+                this.closedKey = closedKey;
                 this.r = rsaCipher.countR(p, q);
                 this.rEuler = rsaCipher.countREuler(p, q);
                 if (inputValidator.isClosedKeyCorrect(closedKey, rEuler)) {
@@ -91,32 +90,80 @@ public class MainController {
         }
     }
 
-    private void handleCipherButton() {
-        String plainText = plainTextOutput.getText();
-        if (plainText.isEmpty()) {
-            plainTextOutput.setText("Введите текст для шифрования");
-            return;
+    private void encode() {
+        if (this.isDataCorrect) {
+            if (this.inputTextSymbolsArray.isEmpty()) {
+                showError("Сначала введите данные для шифрования");
+                return;
+            }
+            List<Short> encodedSymbols = rsaCipher.encodeSymbols(this.inputTextSymbolsArray, this.openKey, this.r);
+            this.outputText.setText(encodedSymbols.toString());
+            this.resultTextSymbolsArray = encodedSymbols;
+        } else {
+            showError("Сначала введите корректные p, q, d и сформируйте остальные нужные числа");
         }
-
-        // Пример шифрования (заглушка)
-        String cipherText = "Зашифрованный: " + plainText;
-        cipherTextOutput.setText(cipherText);
     }
 
-    private void handleEncipherButton() {
-        String cipherText = cipherTextOutput.getText();
-        if (cipherText.isEmpty()) {
-            cipherTextOutput.setText("Нет зашифрованного текста");
-            return;
+    private void decode() {
+        if (this.isDataCorrect) {
+            if (this.inputTextSymbolsArray.isEmpty()) {
+                showError("Сначала введите данные для дешифрирования");
+                return;
+            }
+            List<Short> decodeSymbols = rsaCipher.decodeSymbols(this.inputTextSymbolsArray, this.closedKey, this.r);
+            this.outputText.setText(decodeSymbols.toString());
+            this.resultTextSymbolsArray = decodeSymbols;
+        } else {
+            showError("Сначала введите корректные p, q, d и сформируйте остальные нужные числа");
         }
-
-        // Пример расшифровки (заглушка)
-        String decryptedText = "Расшифрованный: " + cipherText;
-        plainTextOutput.setText(decryptedText);
     }
 
-    private String generateOpenKey(int p, int q) {
-        return "Открытый ключ для p=" + p + ", q=" + q;
+    @FXML
+    private void processData() {
+        if (this.isEncoding) {
+            encode();
+        } else {
+            decode();
+        }
+    }
+
+    @FXML
+    private void setMode() {
+        switch (modeSelector.getSelectedToggle().getUserData().toString()) {
+            case "encipher": {
+                this.isEncoding = true;
+                break;
+            }
+            case "decipher": {
+                this.isEncoding = false;
+                break;
+            }
+        };
+        this.inputTextSymbolsArray = null;
+        outputText.setText("");
+        inputText.setText("");
+    }
+
+    @FXML
+    private void openFile() {
+        try {
+            this.inputTextSymbolsArray = fileUtil.readFile(this.isEncoding);
+            if (this.inputTextSymbolsArray.isEmpty()) {
+                return;
+            }
+            inputText.setText(inputTextSymbolsArray.toString());
+        } catch (IOException e) {
+            showError(e.getMessage());
+        }
+    }
+
+    @FXML
+    private void saveFile() {
+        try {
+            fileUtil.writeFile(this.resultTextSymbolsArray, this.isEncoding);
+        } catch (IOException e) {
+            showError(e.getMessage());
+        }
     }
 
     private void showError(String message) {
