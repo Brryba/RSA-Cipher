@@ -36,35 +36,25 @@ public class RSACipher {
     }
 
     private short fastModularExponentiation(short num, int exponent, int mod) {
-        List<Short> numberTerms = new ArrayList<>();
-        short term = 1;
-        for (short i = 0; i < 16; i++) {
-            if ((term & exponent) > 0) {
-                numberTerms.add(i);
+        long result = 1;
+        long base = num % mod;
+
+        while (exponent > 0) {
+            if ((exponent & 1) == 1) {
+                result = (result * base) % mod;
             }
-            term <<= 1;
+            base = (base * base) % mod;
+            exponent >>= 1;
         }
 
-        List<Short> modularMultipliers = new ArrayList<>();
-        modularMultipliers.add((short) (num % mod));
-        for (int i = 0; i < numberTerms.getLast(); i++) {
-            modularMultipliers.add((short) (modularMultipliers.get(i) * modularMultipliers.get(i) % mod));
-        }
-
-
-        short result = (short) (modularMultipliers.get(numberTerms.getFirst()) % mod);
-        for (int i = 1; i < numberTerms.size(); i++) {
-            result = (short) ((result * modularMultipliers.get(numberTerms.get(i))) % mod);
-        }
-
-        return result;
+        return (short) result;
     }
 
 
 
     public List<Short> encodeSymbols(List<Short> inputTextArray, int openKey, int r) {
         return inputTextArray.stream()
-                .map(sym -> fastModularExponentiation(sym, openKey, r))
+                .map(sym -> fastModularExponentiation((short) (sym & 0xFF), openKey, r))
                 .collect(Collectors.toList());
     }
 

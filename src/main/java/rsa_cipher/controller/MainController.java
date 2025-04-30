@@ -9,6 +9,7 @@ import rsa_cipher.utils.InputValidator;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class MainController {
@@ -97,7 +98,9 @@ public class MainController {
                 return;
             }
             List<Short> encodedSymbols = rsaCipher.encodeSymbols(this.inputTextSymbolsArray, this.openKey, this.r);
-            this.outputText.setText(encodedSymbols.toString());
+            this.outputText.setText(encodedSymbols.stream()
+                    .map(elem -> Integer.toString(elem & 0xFFFF))
+                    .collect(Collectors.joining(" ")));
             this.resultTextSymbolsArray = encodedSymbols;
         } else {
             showError("Сначала введите корректные p, q, d и сформируйте остальные нужные числа");
@@ -111,7 +114,9 @@ public class MainController {
                 return;
             }
             List<Short> decodeSymbols = rsaCipher.decodeSymbols(this.inputTextSymbolsArray, this.closedKey, this.r);
-            this.outputText.setText(decodeSymbols.toString());
+            this.outputText.setText(decodeSymbols.stream()
+                    .map(elem -> Integer.toString(elem & 0xFF))
+                    .collect(Collectors.joining(" ")));
             this.resultTextSymbolsArray = decodeSymbols;
         } else {
             showError("Сначала введите корректные p, q, d и сформируйте остальные нужные числа");
@@ -151,7 +156,9 @@ public class MainController {
             if (this.inputTextSymbolsArray.isEmpty()) {
                 return;
             }
-            inputText.setText(inputTextSymbolsArray.toString());
+            inputText.setText(inputTextSymbolsArray.stream()
+                    .map(elem -> Integer.toString(this.isEncoding ? elem & 0xFF : elem & 0xFFFF))
+                    .collect(Collectors.joining(" ")));
         } catch (IOException e) {
             showError(e.getMessage());
         }
